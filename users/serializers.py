@@ -17,7 +17,7 @@ class UserReadSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name', 'last_name', 'profile_picture',]
+        fields = ['username', 'first_name', 'last_name',]
 
 
 class UserLoginSerializer(serializers.Serializer):

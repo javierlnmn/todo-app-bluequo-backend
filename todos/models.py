@@ -11,10 +11,10 @@ class Todo(models.Model):
     ]
 
     title = models.CharField(max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True)
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='PENDING')
     due_date = models.DateField()
-    created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_todos')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_todos')
     assigned_to = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_todos')
 
     created_at = models.DateTimeField(auto_now_add=True)

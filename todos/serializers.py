@@ -24,7 +24,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class TodoSerializer(serializers.ModelSerializer):
     assigned_to = UserReadSerializer(read_only=True)
-    comments = CommentSerializer(many=True, read_only=True, source='comments')
+    comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Todo
