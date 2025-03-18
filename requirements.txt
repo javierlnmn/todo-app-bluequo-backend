@@ -1,0 +1,19 @@
+asgiref==3.8.1
+certifi==2024.8.30
+charset-normalizer==3.4.0
+Django==5.0.6
+django-4-jet @ https://github.com/Barukimang/django-jet/archive/dev.zip#sha256=73bfdc1ee258ae78c2a1149bea889de8d8a70b1b5807c769c5277f1b40bab499
+django-cors-headers==4.6.0
+django-rest-framework==0.1.0
+djangorestframework==3.15.2
+djangorestframework-simplejwt==5.3.1
+idna==3.10
+mysqlclient==2.2.6
+pillow==11.0.0
+PyJWT==2.10.0
+python-dotenv==1.0.1
+requests==2.32.3
+six==1.16.0
+sqlparse==0.5.2
+urllib3==2.2.3
+requests==2.32.3
