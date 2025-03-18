@@ -9,5 +9,5 @@ admin.site.unregister(TokenProxy)
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('email', 'first_name', 'last_name',)
-    search_fields = ('email',)
+    list_display = ('username', 'first_name', 'last_name',)
+    search_fields = ('username',)

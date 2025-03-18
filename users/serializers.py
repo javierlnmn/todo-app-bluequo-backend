@@ -10,32 +10,31 @@ class UserSignInSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser 
-        fields = ['id', 'email', 'password',]
+        fields = ['id', 'username', 'password',]
 
 
 class UserReadSerializer(serializers.ModelSerializer):
-    profile_picture = serializers.CharField(source='external_profile_picture_url')
     
     class Meta:
         model = CustomUser
-        fields = ['email', 'first_name', 'last_name', 'profile_picture',]
+        fields = ['username', 'first_name', 'last_name', 'profile_picture',]
 
 
 class UserLoginSerializer(serializers.Serializer):
-    email = serializers.CharField()
+    username = serializers.CharField()
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        email = data.get("email")
+        username = data.get("username")
         password = data.get("password")
 
         try:
-            user = authenticate(email=email, password=password)
+            user = authenticate(username=username, password=password)
         except ObjectDoesNotExist:
-            raise serializers.ValidationError("Invalid email or password")
+            raise serializers.ValidationError("Invalid username or password")
         
         if user is None:
-            raise serializers.ValidationError("Invalid email or password")
+            raise serializers.ValidationError("Invalid username or password")
         
         data["user"] = user
         return data

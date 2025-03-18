@@ -6,4 +6,4 @@ class CustomUser(AbstractUser):
     email = None
 
     def __str__(self):
-        return f'{self.email} ({self.first_name} {self.last_name})'
+        return f'{self.username} ({self.first_name} {self.last_name})'
