@@ -6,10 +6,12 @@ from rest_framework.test import APITestCase
 from rest_framework import status
 
 from users.models import CustomUser
+from users.tests import JWTAuthTestCase
 
 from .models import Todo
 
-class TodoViewSetTestCase(APITestCase):
+
+class TodoViewSetTestCase(JWTAuthTestCase):
 
     def setUp(self):
         self.admin = CustomUser.objects.create(username="admin", is_staff=True, is_superuser=True)
@@ -23,11 +25,6 @@ class TodoViewSetTestCase(APITestCase):
         self.due_date = timezone.now().date() + timedelta(days=3)
         self.todo_1 = Todo.objects.create(title="Todo 1", due_date=self.due_date, user=self.user)
         self.todo_2 = Todo.objects.create(title="Todo 2", due_date=self.due_date, user=self.admin)
-
-    def get_jwt_token(self, username, password):
-        response = self.client.post('/api/v1/users/login/', { 'username': username, 'password': password})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        return response.data['access']
 
     def test_create_todo(self):
         token = self.get_jwt_token('user', 'userpassword')
