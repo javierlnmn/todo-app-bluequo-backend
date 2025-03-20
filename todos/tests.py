@@ -10,6 +10,8 @@ from users.tests import JWTAuthTestCase
 
 from .models import Todo
 
+from users.serializers import UserReadSerializer
+
 
 class TodoViewSetTestCase(JWTAuthTestCase):
 
@@ -77,4 +79,6 @@ class TodoViewSetTestCase(JWTAuthTestCase):
         })
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['assignedTo'], self.admin.id)
+
+        admin_user_serializer = UserReadSerializer(self.admin).data
+        self.assertEqual(response.data['assignedTo'], admin_user_serializer)

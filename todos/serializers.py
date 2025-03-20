@@ -32,7 +32,11 @@ class TodoSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         repr = super().to_representation(instance)
         repr['id'] = str(repr['id'])
-        repr['assignedTo'] = instance.assigned_to.id if instance.assigned_to else None
+        if instance.assigned_to:
+            assigned_to_data = UserReadSerializer(instance.assigned_to).data
+            repr['assignedTo'] = assigned_to_data
+        else:
+            repr['assignedTo'] = None
         repr['status'] = instance.get_status_display()
         return repr
 

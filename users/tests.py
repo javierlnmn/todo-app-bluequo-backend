@@ -61,3 +61,55 @@ class AuthTestCase(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer invalidtoken')
         response = self.client.get(self.test_token_url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class UserViewSetTestCase(JWTAuthTestCase):
+
+    def setUp(self):
+        self.user_data = {
+            'username': 'user1',
+            'password': 'userpassword'
+        }
+        self.user = CustomUser.objects.create(username=self.user_data['username'])
+        self.user.set_password(self.user_data['password'])
+        self.user.save()
+
+        self.admin_data = {
+            'username': 'admin',
+            'password': 'adminpassword'
+        }
+        self.admin = CustomUser.objects.create(username=self.admin_data['username'], is_staff=True)
+        self.admin.set_password(self.admin_data['password'])
+        self.admin.save()
+
+        self.users_url = reverse_lazy('users:user-list')
+
+    def test_list_users_authenticated(self):
+        """Test that an authenticated user can list users"""
+        token = self.get_jwt_token(self.user_data['username'], self.user_data['password'])
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+
+        response = self.client.get(self.users_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('username', response.data[0])  # Check if the response contains 'username'
+        self.assertEqual(response.data[0]['username'], self.user_data['username'])
+
+    def test_list_users_unauthenticated(self):
+        """Test that unauthenticated users are not allowed to list users"""
+        response = self.client.get(self.users_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_retrieve_user(self):
+        token = self.get_jwt_token(self.user_data['username'], self.user_data['password'])
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+        
+        user_detail_url = reverse_lazy('users:user-detail', kwargs={'pk': self.user.id})  
+        response = self.client.get(user_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['username'], self.user_data['username'])
+
+    def test_retrieve_user_without_token(self):
+        """Test that retrieving user data without token should be unauthorized"""
+        user_detail_url = reverse_lazy('users:user-detail', kwargs={'pk': self.user.id})
+        response = self.client.get(user_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
