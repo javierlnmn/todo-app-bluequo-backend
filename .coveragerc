@@ -3,6 +3,7 @@ omit = */tests.py
     */__init__.py
     manage.py
     */models.py
+    */admin.py
     */asgi.py
     */wsgi.py
     **/migrations/**

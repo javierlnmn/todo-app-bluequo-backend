@@ -54,38 +54,27 @@ class TodoViewSetTestCase(JWTAuthTestCase):
         response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', { 'title': 'Updated by Admin', 'dueDate': self.due_date, })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_assign_todo_admin(self):
-        token = self.get_jwt_token('admin', 'adminpassword')
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
-        
-        user_to_assign = CustomUser.objects.create(username="user2")
-        user_to_assign.set_password("user2password")
-        
-        response = self.client.post(f'/api/v1/todos/todos/{self.todo_1.id}/assign/', { 'user_id': user_to_assign.id })
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        self.todo_1.refresh_from_db()
-        self.assertEqual(self.todo_1.assigned_to, user_to_assign)
-
-    def test_assign_todo_owner(self):
+    def test_update_todo_with_user_field(self):
         token = self.get_jwt_token('user', 'userpassword')
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        user_to_assign = CustomUser.objects.create(username="user2")
-        user_to_assign.set_password("user2password")
-        
-        response = self.client.post(f'/api/v1/todos/todos/{self.todo_1.id}/assign/', { 'user_id': user_to_assign.id })
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-        self.todo_1.refresh_from_db()
-        self.assertEqual(self.todo_1.assigned_to, user_to_assign)
+        response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', {
+            'title': 'Updated Todo',
+            'dueDate': self.due_date,
+            'user': self.admin.id,
+        })
 
-    def test_assign_todo_non_owner(self):
+        self.assertEqual(self.user.username, response.data['user']['username']) # User was not updated
+
+    def test_update_todo_with_assignedTo_field(self):
         token = self.get_jwt_token('user', 'userpassword')
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        user_to_assign = CustomUser.objects.create(username="user2")
-        user_to_assign.set_password("user2password")
+        response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', {
+            'title': 'Updated Todo',
+            'dueDate': self.due_date,
+            'assignedTo': str(self.admin.id),
+        })
         
-        response = self.client.post(f'/api/v1/todos/todos/{self.todo_2.id}/assign/', { 'user_id': user_to_assign.id })
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['assignedTo'], self.admin.id)
