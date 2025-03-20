@@ -30,28 +30,28 @@ class TodoViewSetTestCase(JWTAuthTestCase):
         token = self.get_jwt_token('user', 'userpassword')
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        response = self.client.post('/api/v1/todos/todos/', { 'title': 'New Todo', 'due_date': self.due_date, })
+        response = self.client.post('/api/v1/todos/todos/', { 'title': 'New Todo', 'dueDate': self.due_date, })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_update_todo_owner(self):
         token = self.get_jwt_token('user', 'userpassword')
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', { 'title': 'Updated Todo', 'due_date': self.due_date, })
+        response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', { 'title': 'Updated Todo', 'dueDate': self.due_date, })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_todo_non_owner(self):
         token = self.get_jwt_token('user', 'userpassword')
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        response = self.client.put(f'/api/v1/todos/todos/{self.todo_2.id}/', { 'title': 'Updated Todo', 'due_date': self.due_date, })
+        response = self.client.put(f'/api/v1/todos/todos/{self.todo_2.id}/', { 'title': 'Updated Todo', 'dueDate': self.due_date, })
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_update_todo_admin(self):
         token = self.get_jwt_token('admin', 'adminpassword')
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
         
-        response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', { 'title': 'Updated by Admin', 'due_date': self.due_date, })
+        response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', { 'title': 'Updated by Admin', 'dueDate': self.due_date, })
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_assign_todo_admin(self):

@@ -14,10 +14,11 @@ class UserSignInSerializer(serializers.ModelSerializer):
 
 
 class UserReadSerializer(serializers.ModelSerializer):
+    isSuperuser = serializers.BooleanField(source='is_superuser')
     
     class Meta:
         model = CustomUser
-        fields = ['username', 'first_name', 'last_name',]
+        fields = ('username', 'isSuperuser')
 
 
 class UserLoginSerializer(serializers.Serializer):

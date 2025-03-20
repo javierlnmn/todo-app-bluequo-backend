@@ -21,10 +21,18 @@ class CommentSerializer(serializers.ModelSerializer):
             'created_at'
         )
 
-
 class TodoSerializer(serializers.ModelSerializer):
-    assigned_to = UserReadSerializer(read_only=True)
+    user = UserReadSerializer(read_only=True)
+    assignedTo = UserReadSerializer(read_only=True, source='assigned_to')
+    dueDate = serializers.DateField(source='due_date')
     comments = CommentSerializer(many=True, read_only=True)
+    status = serializers.ChoiceField(choices=Todo.STATUS_CHOICES, required=False)
+
+    def to_representation(self, instance):
+        repr = super().to_representation(instance)
+        repr['id'] = str(repr['id'])
+        repr['status'] = instance.get_status_display()
+        return repr
 
     class Meta:
         model = Todo
@@ -33,9 +41,10 @@ class TodoSerializer(serializers.ModelSerializer):
             'title',
             'description',
             'status',
-            'due_date',
-            'assigned_to',
-            'comments'
+            'dueDate',
+            'assignedTo',
+            'comments',
+            'user',
         )
         read_only_fields = (
             'id',
