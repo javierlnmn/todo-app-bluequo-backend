@@ -8,7 +8,7 @@ from .models import Todo, Comment
 
 class CommentSerializer(serializers.ModelSerializer):
     user = UserReadSerializer(read_only=True)
-    created = serializers.DateTimeField(source='created_at')
+    created = serializers.DateTimeField(source='created_at', read_only=True)
 
     class Meta:
         model = Comment
@@ -19,9 +19,6 @@ class CommentSerializer(serializers.ModelSerializer):
             'content',
             'created'
         )
-        read_only_fields = (
-            'created',
-        )
 
 class TodoSerializer(serializers.ModelSerializer):
     user = UserReadSerializer(read_only=True)
@@ -29,7 +26,7 @@ class TodoSerializer(serializers.ModelSerializer):
     dueDate = serializers.DateField(source='due_date')
     comments = CommentSerializer(many=True, read_only=True)
     status = serializers.ChoiceField(choices=Todo.STATUS_CHOICES, required=False, allow_null=True)
-    lastUpdated = serializers.DateTimeField(source='updated_at')
+    lastUpdated = serializers.DateTimeField(source='updated_at', read_only=True)
 
     def to_representation(self, instance):
         repr = super().to_representation(instance)
@@ -54,7 +51,4 @@ class TodoSerializer(serializers.ModelSerializer):
             'comments',
             'user',
             'lastUpdated'
-        )
-        read_only_fields = (
-            'lastUpdated',
         )
