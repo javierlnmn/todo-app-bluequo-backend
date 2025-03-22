@@ -82,6 +82,25 @@ class TodoViewSetTestCase(JWTAuthTestCase):
 
         admin_user_serializer = UserReadSerializer(self.admin).data
         self.assertEqual(response.data['assignedTo'], admin_user_serializer)
+    
+    def test_update_todo_with_assignedTo_field_empty(self):
+        token = self.get_jwt_token('user', 'userpassword')
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {token}')
+
+        self.todo_1.assigned_to = self.admin
+        self.todo_1.save()
+
+        response = self.client.put(f'/api/v1/todos/todos/{self.todo_1.id}/', {
+            'title': 'Updated Todo',
+            'dueDate': self.due_date,
+            'assignedTo': '',
+        })
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        self.todo_1.refresh_from_db()
+        self.assertEqual(self.todo_1.assigned_to, None)
+        self.assertEqual(response.data['assignedTo'], None)
 
 
 class CommentViewSetTestCase(JWTAuthTestCase):

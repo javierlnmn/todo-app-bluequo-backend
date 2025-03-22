@@ -10,7 +10,7 @@ class UserSignInSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser 
-        fields = ['id', 'username', 'password',]
+        fields = ('id', 'username', 'password',)
 
 
 class UserReadSerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class UserReadSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomUser
-        fields = ('username', 'isSuperuser')
+        fields = ('id', 'username', 'isSuperuser')
 
 
 class UserLoginSerializer(serializers.Serializer):
