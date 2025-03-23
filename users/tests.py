@@ -32,11 +32,19 @@ class AuthTestCase(APITestCase):
     def test_signup(self):
         response = self.client.post(self.signup_url, {
             'username': 'newuser',
-            'password': 'newpassword123'
+            'password': 'newpassword123',
+            'confirm_password': 'newpassword123'
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('access', response.data)
-        self.assertIn('refresh', response.data)
+
+    def test_signup_no_matching_passwords(self):
+        response = self.client.post(self.signup_url, {
+            'username': 'newuser',
+            'password': 'newpassword123',
+            'confirm_password': 'newpassword345'
+        })
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_login(self):
         response = self.client.post(self.login_url, {

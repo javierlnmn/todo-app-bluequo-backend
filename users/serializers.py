@@ -1,16 +1,28 @@
 from django.contrib.auth import authenticate
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import serializers
 
 from .models import CustomUser
 
-
 class UserSignInSerializer(serializers.ModelSerializer):
-    
+    confirm_password = serializers.CharField(write_only=True)
+
     class Meta:
-        model = CustomUser 
-        fields = ('id', 'username', 'password',)
+        model = CustomUser
+        fields = ('username', 'password', 'confirm_password')
+
+    def validate(self, data):
+        if data['password'] != data['confirm_password']:
+            raise serializers.ValidationError("Passwords do not match")
+        return data
+
+    def create(self, validated_data):
+        user = CustomUser.objects.create(username=validated_data['username'],)
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class UserReadSerializer(serializers.ModelSerializer):

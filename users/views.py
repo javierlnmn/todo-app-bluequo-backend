@@ -27,8 +27,6 @@ class SignupView(CreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         user = serializer.save()
-        user.set_password(request.data['password'])
-        user.save()
 
         refresh = RefreshToken.for_user(user)
         access_token = str(refresh.access_token)
