@@ -12,13 +12,13 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 
-from .serializers import UserSignInSerializer, UserReadSerializer, UserLoginSerializer
+from .serializers import UserSignUpSerializer, UserReadSerializer, UserLoginSerializer
 
 from .models import CustomUser
 
 
 class SignupView(CreateAPIView):
-    serializer_class = UserSignInSerializer
+    serializer_class = UserSignUpSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

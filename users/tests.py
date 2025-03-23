@@ -46,6 +46,16 @@ class AuthTestCase(APITestCase):
         })
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_signup_not_valid_password(self):
+        response = self.client.post(self.signup_url, {
+            'username': 'newuser',
+            'password': '1234',
+            'confirmPassword': '1234'
+        })
+        self.assertIn('numeric', str(response.data))
+        self.assertIn('common', str(response.data))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_login(self):
         response = self.client.post(self.login_url, {
             'username': self.user_data['username'],
