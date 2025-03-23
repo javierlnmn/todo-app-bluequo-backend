@@ -7,14 +7,14 @@ from rest_framework import serializers
 from .models import CustomUser
 
 class UserSignInSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(write_only=True)
+    confirmPassword = serializers.CharField(write_only=True)
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'password', 'confirm_password')
+        fields = ('username', 'password', 'confirmPassword')
 
     def validate(self, data):
-        if data['password'] != data['confirm_password']:
+        if data['password'] != data['confirmPassword']:
             raise serializers.ValidationError("Passwords do not match")
         return data
 

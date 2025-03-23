@@ -33,7 +33,7 @@ class AuthTestCase(APITestCase):
         response = self.client.post(self.signup_url, {
             'username': 'newuser',
             'password': 'newpassword123',
-            'confirm_password': 'newpassword123'
+            'confirmPassword': 'newpassword123'
         })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn('access', response.data)
@@ -42,7 +42,7 @@ class AuthTestCase(APITestCase):
         response = self.client.post(self.signup_url, {
             'username': 'newuser',
             'password': 'newpassword123',
-            'confirm_password': 'newpassword345'
+            'confirmPassword': 'newpassword345'
         })
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
